@@ -5,6 +5,8 @@ import gis.obj.DetailCodeInfo;
 import gis.obj.StatInfo;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,6 +29,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -146,10 +149,30 @@ public class StatCollector {
 
 		return sb.toString();
 	}
+	
+
+	/**
+	 * 에러를 기록한다.
+	 * 
+	 * @param info
+	 * @param file
+	 */
+	private void writeError(StatInfo info, String file) {
+		BufferedWriter out;
+		try {
+			out = new BufferedWriter(new FileWriter(file, true));
+			out.write(info.toString());
+			out.newLine();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 
 	public void run() {
-
-		List<DetailCodeInfo> infoList = dao.getDetailCodeList();
+		String upCode = "11";	//서울만!
+		List<DetailCodeInfo> infoList = dao.getDetailCodeList(upCode);
 		for (DetailCodeInfo info : infoList) {
 			String posX = info.getCenter_x().toString();
 			String posY = info.getCenter_y().toString();
@@ -159,7 +182,12 @@ public class StatCollector {
 				StatInfo statInfo = parseJson(result, String.valueOf(item));
 				
 				//디비에 저장.
-				dao.insertStatInfo(statInfo);
+				try {
+					dao.insertStatInfo(statInfo);
+				} catch (DataAccessException e) {
+					writeError(statInfo, "stat_db_error.txt");
+				}
+				
 			}
 
 		}

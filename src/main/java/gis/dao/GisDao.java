@@ -12,7 +12,7 @@ public interface GisDao {
 
 	public DetailCodeInfo getDetailCodeInfo();
 	
-	public List<DetailCodeInfo> getDetailCodeList();
+	public List<DetailCodeInfo> getDetailCodeList(String upCode);
 
 	public void insertStatInfo(StatInfo statInfo);
 

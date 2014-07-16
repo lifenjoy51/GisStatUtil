@@ -28,9 +28,10 @@
 		limit 1
 	</select>
 	
-	<select id="getDetailCodeList" resultType="detailCodeInfo">
+	<select id="getDetailCodeList" parameterType="String" resultType="detailCodeInfo">
 		select *
 		from detail_code_info
+		where left(code,2) = #{code}
 	</select>
 	
 	<insert id="insertStatInfo" parameterType="statInfo">
