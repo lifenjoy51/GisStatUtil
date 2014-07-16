@@ -6,6 +6,18 @@ public class DetailCodeInfo {
 	private String coord_array_string;
 	private Integer center_x;
 	private Integer center_y;
+	private String status;
+	private String worker;
+
+	public DetailCodeInfo() {
+
+	}
+
+	public DetailCodeInfo(String code, String worker, String status) {
+		this.code = code;
+		this.worker = worker;
+		this.status = status;
+	}
 
 	public String getCode() {
 		return code;
@@ -45,6 +57,22 @@ public class DetailCodeInfo {
 
 	public void setCenter_y(Integer center_y) {
 		this.center_y = center_y;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getWorker() {
+		return worker;
+	}
+
+	public void setWorker(String worker) {
+		this.worker = worker;
 	}
 
 	@Override

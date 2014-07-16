@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gis.dao.GisDao">
+
+	<insert id="insertDetailCodeInfo" parameterType="detailCodeInfo">
+		insert into
+		detail_code_info
+		(
+			code
+			,addr
+			,coord_array_string
+			,center_x
+			,center_y
+		) values (
+			#{code}
+			,#{addr}
+			,#{coord_array_string}
+			,#{center_x}
+			,#{center_y}
+		)
+	</insert>
+	
+	<select id="getDetailCodeInfo" resultType="detailCodeInfo">
+		select *
+		from detail_code_info
+		limit 1
+	</select>
+	
+	<select id="getDetailCodeList" parameterType="String" resultType="detailCodeInfo">
+		select *
+		from detail_code_info
+		where code = #{code}
+	</select>
+	
+	<select id="getRemainCode" resultType="String">
+		select code
+		from detail_code_info
+		where status='N'
+		limit 1
+	</select>
+	
+	<insert id="insertStatInfo" parameterType="statInfo">
+		insert into stat_info
+		(
+			code,
+			item,
+			cnt
+		) values (			
+			#{code}
+			,#{item}
+			,#{cnt}
+		)
+	</insert>
+	
+	<update id="updateStatus" parameterType="detailCodeInfo">
+		update detail_code_info
+		set status = #{status}
+			,worker = #{worker}
+		where code = #{code}
+	</update>
+	
+
+</mapper>

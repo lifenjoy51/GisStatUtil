@@ -5,11 +5,11 @@ import gis.obj.DetailCodeInfo;
 import gis.obj.StatInfo;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -24,19 +24,29 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
 @Component
 public class StatCollector {
+	
+	@Autowired
+	@Qualifier("gisBatchDao")
+	GisDao gisBatchDao;
 
 	@Autowired
+	@Qualifier("gisDao")
 	GisDao dao;
+	
+	@Autowired
+	SqlSessionFactory sessionFactoryBean;
 
 	final String url = "http://sgis.kostat.go.kr/msgis/getResultByPoint.do";
 
@@ -80,7 +90,7 @@ public class StatCollector {
 	}
 
 	private String getCnt(String itemValue) {
-		System.out.println(itemValue);
+
 		if (itemValue.contains("N/A")) {
 			return "0";
 		} else {
@@ -149,30 +159,31 @@ public class StatCollector {
 
 		return sb.toString();
 	}
-	
 
-	/**
-	 * 에러를 기록한다.
-	 * 
-	 * @param info
-	 * @param file
-	 */
-	private void writeError(StatInfo info, String file) {
-		BufferedWriter out;
+
+	public void run() throws InterruptedException {
+		// 작업 안한거 골라오고.
+		String code = dao.getRemainCode();
+
+		// 내가 누군지
+		String worker = System.getProperty("user.name");
+		String ip = "localhost";
 		try {
-			out = new BufferedWriter(new FileWriter(file, true));
-			out.write(info.toString());
-			out.newLine();
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+			ip = InetAddress.getLocalHost().getHostName();
+			worker = worker + "@" + ip;
+		} catch (UnknownHostException e1) {
+			e1.printStackTrace();
 		}
 
-	}
+		// 작업중으로 업데이트
+		dao.updateStatus(new DetailCodeInfo(code, worker, "W"));
+		
+		//배치 인서트를 위한 매퍼
+		//SqlSession sqlSession = sessionFactoryBean.openSession(ExecutorType.BATCH);
+		//GisDao gisDao = sqlSession.getMapper(GisDao.class);
 
-	public void run() {
-		String upCode = "11";	//서울만!
-		List<DetailCodeInfo> infoList = dao.getDetailCodeList(upCode);
+		//해당 코드만 가져오기.
+		List<DetailCodeInfo> infoList = dao.getDetailCodeList(code);
 		for (DetailCodeInfo info : infoList) {
 			String posX = info.getCenter_x().toString();
 			String posY = info.getCenter_y().toString();
@@ -180,20 +191,29 @@ public class StatCollector {
 			for (int item = 1; item <= 55; item++) {
 				String result = get(posX, posY, String.valueOf(item));
 				StatInfo statInfo = parseJson(result, String.valueOf(item));
-				
-				//디비에 저장.
+
+				// 디비에 저장.
 				try {
-					dao.insertStatInfo(statInfo);
+					gisBatchDao.insertStatInfo(statInfo);
+					System.out.println(statInfo);
 				} catch (DataAccessException e) {
-					writeError(statInfo, "stat_db_error.txt");
+					//writeError(statInfo, "stat_db_error.txt");
 				}
-				
+
 			}
 
+			// 쉬었다가 하자
+			Thread.sleep(100);
+
 		}
-		// String result = get("191808", "443030", "1");
-		// StatInfo info = parseJson(result, "1");
-		// System.out.println(info);
+		
+		//배치 커밋
+		//sqlSession.flushStatements();
+		//sqlSession.commit();
+		//sqlSession.close();
+
+		// 작업완료 업데이트.
+		dao.updateStatus(new DetailCodeInfo(code, worker, "Y"));
 	}
 
 }

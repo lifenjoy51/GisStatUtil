@@ -15,5 +15,9 @@ public interface GisDao {
 	public List<DetailCodeInfo> getDetailCodeList(String upCode);
 
 	public void insertStatInfo(StatInfo statInfo);
+	
+	public String getRemainCode();
+
+	public void updateStatus(DetailCodeInfo info);
 
 }

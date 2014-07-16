@@ -1,7 +1,5 @@
 package gis;
 
-import gis.dao.GisDao;
-import gis.obj.DetailCodeInfo;
 import gis.util.DetailCodeInfoParser;
 import gis.util.StatCollector;
 
@@ -46,14 +44,14 @@ public class Main {
 		executer.run();
 
 	}
-
-	@Autowired
-	GisDao gisDao;
 	
-	private void run() throws IOException {
+	private void run() throws IOException, InterruptedException {
 		//파싱하자!
 		//detailCodeInfoParser.run();
 		
-		statCollector.run();
+		while(true){
+			statCollector.run();
+			Thread.sleep(1000);
+		}
 	}
 }

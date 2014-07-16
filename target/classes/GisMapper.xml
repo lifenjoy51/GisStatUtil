@@ -31,7 +31,14 @@
 	<select id="getDetailCodeList" parameterType="String" resultType="detailCodeInfo">
 		select *
 		from detail_code_info
-		where left(code,2) = #{code}
+		where code = #{code}
+	</select>
+	
+	<select id="getRemainCode" resultType="String">
+		select code
+		from detail_code_info
+		where status='N'
+		limit 1
 	</select>
 	
 	<insert id="insertStatInfo" parameterType="statInfo">
@@ -46,6 +53,13 @@
 			,#{cnt}
 		)
 	</insert>
+	
+	<update id="updateStatus" parameterType="detailCodeInfo">
+		update detail_code_info
+		set status = #{status}
+			,worker = #{worker}
+		where code = #{code}
+	</update>
 	
 
 </mapper>
