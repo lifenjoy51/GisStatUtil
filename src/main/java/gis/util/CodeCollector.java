@@ -47,7 +47,7 @@ public class CodeCollector {
         if (json.contains("errorCode")) {
             return;
         } else {
-            // 파싱해서 여러번 보냄.
+            		// 파싱해서 여러번 보냄.
             List<String> codes = parseCode(json);
             for (String cd : codes) {
                 request(cd);

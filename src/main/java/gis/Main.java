@@ -1,6 +1,7 @@
 package gis;
 
 import gis.util.DetailCodeInfoParser;
+import gis.util.ProxyManager;
 import gis.util.StatCollector;
 
 import java.io.IOException;
@@ -38,19 +39,27 @@ public class Main {
 		for (String s : list) {
 			System.out.println(s);
 		}
+		
+		//파라미터
+		String apikey = "key";
+		if(args.length>0){
+			apikey = args[0];
+		}
 
 		// 실행!
 		Main executer = ctx.getBean(Main.class);
-		executer.run();
+		executer.run(apikey);
 
 	}
 	
-	private void run() throws IOException, InterruptedException {
+	private void run(String apikey) throws IOException, InterruptedException {
 		//파싱하자!
 		//detailCodeInfoParser.run();
+		//프록시 설정
+		ProxyManager.setProxy();
 		
 		while(true){
-			statCollector.run();
+			statCollector.run(apikey);
 			Thread.sleep(1000);
 		}
 	}
