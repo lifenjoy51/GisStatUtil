@@ -63,6 +63,7 @@ public class StatCollector {
 		JSONParser jsonParser = new JSONParser();
 		JSONObject obj;
 		try {
+			System.out.println(jsonString);
 			obj = (JSONObject) jsonParser.parse(jsonString);
 			JSONArray features = (JSONArray) obj.get("features");
 			JSONObject feature = (JSONObject) features.get(0); // 배열.
@@ -118,6 +119,7 @@ public class StatCollector {
 		nvps.add(new BasicNameValuePair("point", "POINT(" + posX + " " + posY
 				+ ")")); // 위치정보.
 		nvps.add(new BasicNameValuePair("item", item));// 종류. 1-55.
+		nvps.add(new BasicNameValuePair("apikey", "key"));// apikey
 		String param = URLEncodedUtils.format(nvps, "ascii");
 
 		// 요청준비
@@ -127,9 +129,10 @@ public class StatCollector {
 		// 헤더 조정.
 		httpGet.setHeader("Host", "sgis.kostat.go.kr");
 		httpGet.setHeader("Referer", "http://sgis.kostat.go.kr/msgis/index.vw");
+		//httpGet.setHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36");
 		httpGet.setHeader(
 				"Cookie",
-				"JSESSIONID=BdKZjrJbwfBj6ykdokK5twDNZP48baCjGPDalEl4EKlINQOuSxLn1CMLG85nFmun.GSKSWAS2_servlet_engine1");
+				"JSESSIONID=y5yfrMkjaPN9qGkQ9aI16im3hDQ4OPnTHGRuwpp1las6fZ3tSsHOaiKyc1NSveej.GSKSWAS2_servlet_engine1");
 		// 쿠기값은 적절히 바꿔줌.
 
 		// 출력.
@@ -185,6 +188,9 @@ public class StatCollector {
 		//해당 코드만 가져오기.
 		List<DetailCodeInfo> infoList = dao.getDetailCodeList(code);
 		for (DetailCodeInfo info : infoList) {
+			//System.out.println(info);
+			System.out.println(info.getCode());
+			try{
 			String posX = info.getCenter_x().toString();
 			String posY = info.getCenter_y().toString();
 
@@ -195,7 +201,7 @@ public class StatCollector {
 				// 디비에 저장.
 				try {
 					gisBatchDao.insertStatInfo(statInfo);
-					System.out.println(statInfo);
+					//System.out.println(statInfo);
 				} catch (DataAccessException e) {
 					//writeError(statInfo, "stat_db_error.txt");
 				}
@@ -204,6 +210,9 @@ public class StatCollector {
 
 			// 쉬었다가 하자
 			Thread.sleep(100);
+			}catch(NullPointerException ne){
+				continue;
+			}
 
 		}
 		
