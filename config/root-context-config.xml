@@ -47,10 +47,11 @@
 		<property name="mapperInterface" value="gis.dao.GisDao" />
 		<property name="sqlSessionTemplate" ref="sqlSession" />
 	</bean>
-	
+
 	<bean id="gisDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="gis.dao.GisDao" />
-		<property name="sqlSessionTemplate" ref="sqlSession" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+
 	</bean>
 
 	<!-- ########### -->

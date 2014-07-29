@@ -61,5 +61,41 @@
 		where code = #{code}
 	</update>
 	
-
+	<!-- 데이터 임포트  -->
+	<insert id="insertRawData" parameterType="rawData">
+	INSERT INTO raw_data
+	(
+		year,
+		code,
+		tp_cd,
+		cnt
+	)	VALUES	(
+		#{year},
+		#{code},
+		#{tp_cd},
+		#{cnt}
+	)		
+	</insert>
+	
+	<insert id="insertCompInfo" parameterType="compInfo">
+	INSERT INTO comp_info
+	(
+	code,
+	item,
+	comp_nm,
+	number,
+	ufid,
+	x,
+	y
+	)	VALUES	(
+	#{code},
+	#{item},
+	#{comp_nm},
+	#{number},
+	#{ufid},
+	#{x},
+	#{y}
+	)	
+	</insert>
+	
 </mapper>

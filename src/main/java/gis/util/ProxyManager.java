@@ -46,7 +46,7 @@ public class ProxyManager {
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		nvps.add(new BasicNameValuePair("key", "f0e85763252cd9b246862a9c"));// api-key
 		nvps.add(new BasicNameValuePair("ps", "http"));// type
-		nvps.add(new BasicNameValuePair("as", "hap"));// type
+		nvps.add(new BasicNameValuePair("as", "tp"));// type = tp, ap, dp, hap
 		String param = URLEncodedUtils.format(nvps, "ascii");
 
 		// 요청준비
@@ -149,8 +149,8 @@ public class ProxyManager {
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
 			connection.setRequestMethod("GET");
-			connection.setConnectTimeout(5*1000);
-			connection.setReadTimeout(5*1000);
+			connection.setConnectTimeout(10*1000);
+			connection.setReadTimeout(10*1000);
 			connection.connect();
 			
 			System.out.println("getResponseCode");

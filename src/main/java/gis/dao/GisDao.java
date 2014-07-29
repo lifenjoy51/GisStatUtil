@@ -1,6 +1,8 @@
 package gis.dao;
 
+import gis.obj.CompInfo;
 import gis.obj.DetailCodeInfo;
+import gis.obj.RawData;
 import gis.obj.StatInfo;
 
 import java.util.List;
@@ -19,5 +21,9 @@ public interface GisDao {
 	public String getRemainCode();
 
 	public void updateStatus(DetailCodeInfo info);
+
+	public void insertRawData(RawData data);
+
+	public void insertCompInfo(CompInfo c);
 
 }
