@@ -11,8 +11,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -61,10 +64,14 @@ public class CompCollector {
 			throws ParseException {
 		List<CompInfo> list = new ArrayList<CompInfo>();
 		JSONParser jsonParser = new JSONParser();
-		JSONObject obj;
+		JSONObject obj = null;
 		System.out.println(code + ", " + item);
-
-		obj = (JSONObject) jsonParser.parse(jsonString);
+		try {
+			obj = (JSONObject) jsonParser.parse(jsonString);
+		} catch (ParseException pe) {
+			System.err.println(jsonString);
+			ProxyManager.setProxy();
+		}
 		try {
 			JSONArray compList = (JSONArray) obj.get("compList");
 			for (int i = 0; i < compList.size(); i++) {
@@ -101,14 +108,20 @@ public class CompCollector {
 	public String get(String code, String item) throws InterruptedException {
 		// 요청 날릴 때 인간처럼 보이게 한다.
 		// 1. 랜덤하게 쉬기.
-		long sleep = (long) (Math.random() * 10000);
+		long sleep = (long) (Math.random() * 3000) + 2000;
+		// 새벽시간대에는 좀 더 빠르게!
+		int hour = Calendar.getInstance(Locale.KOREA).get(Calendar.HOUR_OF_DAY);
+		if (hour > 3 && hour < 9) {
+			sleep = sleep / 3;
+		}
 		System.err.println("sleep!!" + sleep);
 		Thread.sleep(sleep);
 
 		// 2. 랜덤하게 아이피 바꾸기.
-		if (Math.random() * 100 == 1) {
+		if (Math.random() * 100 < 3) {
 			System.err.println("ProxyManager.setProxy");
 			ProxyManager.setProxy();
+			getCookie();
 		}
 
 		// 파라미터 조립
@@ -151,7 +164,7 @@ public class CompCollector {
 			EntityUtils.consume(entity);
 			response.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 			// 연결 안되면 프록시 재설정~
 			ProxyManager.setProxy();
 		} finally {
@@ -166,7 +179,7 @@ public class CompCollector {
 			System.out.println("getCookie");
 			URL url = new URL("http://sgis.kostat.go.kr/msgis/index.vw");
 			URLConnection conn = url.openConnection();
-			conn.setConnectTimeout(10 * 1000);
+			conn.setConnectTimeout(5 * 1000);
 			conn.setReadTimeout(10 * 1000);
 			conn.setRequestProperty(
 					"User-Agent",
@@ -196,7 +209,7 @@ public class CompCollector {
 
 			System.out.println(cookie);
 		} catch (IOException ioe) {
-			ioe.printStackTrace();
+			System.err.println(ioe.getMessage());
 		}
 
 	}
@@ -219,7 +232,8 @@ public class CompCollector {
 
 	}
 
-	private void getCompInfo(String code, String item) throws ParseException, InterruptedException {
+	private void getCompInfo(String code, String item) throws ParseException,
+			InterruptedException {
 		// 세션연결
 		SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH,
 				false);

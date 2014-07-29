@@ -46,7 +46,7 @@ public class ProxyManager {
 		List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		nvps.add(new BasicNameValuePair("key", "f0e85763252cd9b246862a9c"));// api-key
 		nvps.add(new BasicNameValuePair("ps", "http"));// type
-		nvps.add(new BasicNameValuePair("as", "tp"));// type = tp, ap, dp, hap
+		nvps.add(new BasicNameValuePair("as", "tp,ap,dp,hap"));// type = tp, ap, dp, hap
 		String param = URLEncodedUtils.format(nvps, "ascii");
 
 		// 요청준비
@@ -74,7 +74,7 @@ public class ProxyManager {
 			EntityUtils.consume(entity);
 			response.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		} finally {
 
 		}
@@ -122,7 +122,8 @@ public class ProxyManager {
 			}
 
 		} catch (ParseException pe) {
-			pe.printStackTrace();
+			System.err.println(pe.getMessage());
+			//pe.printStackTrace();
 		}
 		
 		//프록시 모두 실패할 경우
@@ -149,22 +150,22 @@ public class ProxyManager {
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
 			connection.setRequestMethod("GET");
-			connection.setConnectTimeout(10*1000);
-			connection.setReadTimeout(10*1000);
+			connection.setConnectTimeout(5*1000);
+			connection.setReadTimeout(5*1000);
 			connection.connect();
 			
 			System.out.println("getResponseCode");
 
 			code = connection.getResponseCode();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			//e.printStackTrace();
 		} catch (ProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			//e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println(e.getMessage());
+			//e.printStackTrace();
 		}
 
 		if (code == 200) {
