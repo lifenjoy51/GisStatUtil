@@ -1,9 +1,10 @@
 package gis;
 
 import gis.dump.DataImporter;
+import gis.trans.DistCalculator;
+import gis.trans.PositionCalculator;
 import gis.util.CompCollector;
 import gis.util.DetailCodeInfoParser;
-import gis.util.ProxyManager;
 import gis.util.StatCollector;
 
 import java.io.IOException;
@@ -29,9 +30,16 @@ public class Main {
 	@Autowired
 	CompCollector compCollector;
 	
+	
 	@Autowired
 	@Qualifier("dataImport")
 	DataImporter dataImporter;
+	
+	@Autowired
+	PositionCalculator positionCalculator;
+	
+	@Autowired
+	DistCalculator distCalculator;
 
 	/**
 	 * 처음 구동되는 부분.
@@ -68,8 +76,8 @@ public class Main {
 		//파싱하자!
 		//detailCodeInfoParser.run();
 		//프록시 설정
-		ProxyManager.setProxy();
-		compCollector.test();
+		//ProxyManager.setProxy();
+		//compCollector.test();
 		
 		/*while(true){
 			statCollector.run(apikey);
@@ -78,5 +86,11 @@ public class Main {
 		
 		//데이터 임포트
 		//dataImporter.run();
+		
+		//흐흐
+		//positionCalculator.run();
+		
+		//최단거리 계산
+		distCalculator.run();
 	}
 }

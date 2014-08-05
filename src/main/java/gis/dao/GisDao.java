@@ -15,6 +15,8 @@ public interface GisDao {
 	public DetailCodeInfo getDetailCodeInfo();
 	
 	public List<DetailCodeInfo> getDetailCodeList(String upCode);
+	
+	public List<DetailCodeInfo> getDetailCodeListAll();
 
 	public void insertStatInfo(StatInfo statInfo);
 	
@@ -25,5 +27,11 @@ public interface GisDao {
 	public void insertRawData(RawData data);
 
 	public void insertCompInfo(CompInfo c);
+	
+	public List<CompInfo> getCompInfoList();
+	
+	public void updateCompInfoCode(CompInfo c);
+
+	public List<DetailCodeInfo> getDetailCodeListBy5Code(String code);
 
 }

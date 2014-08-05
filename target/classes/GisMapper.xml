@@ -98,4 +98,57 @@
 	)	
 	</insert>
 	
+	<select id="getDetailCodeListAll" resultType="detailCodeInfo">
+		select 
+			code
+			,addr
+			,center_x
+			,center_y
+		from detail_code_info
+	</select>
+	
+	<select id="getCompInfoList" resultType="compInfo">
+		select 
+			code,
+			item,
+			comp_nm,
+			number,
+			ufid,
+			x,
+			y
+		from comp_info
+	</select>
+	
+	<update id="updateCompInfoCode" parameterType="compInfo">
+		update comp_info
+		set near_code = #{near_code}
+		where ufid = #{ufid}
+	</update>
+	
+	<select id="getDetailCodeListBy5Code" resultType="detailCodeInfo" parameterType="String">
+	
+		select 
+			code
+			,addr
+			,center_x
+			,center_y
+		from detail_code_info
+		where left(code,5) = #{code}
+		and center_x is not null
+		and center_y is not null
+	</select>
+	
+	<insert id="updateCodeItemDist" parameterType="codeItemDist">
+		INSERT INTO code_item_dist
+		(
+			code
+			,item
+			,dist
+		) VALUES (
+			#{code}
+			,#{item}
+			,#{dist}
+		)
+	</insert>
+	
 </mapper>

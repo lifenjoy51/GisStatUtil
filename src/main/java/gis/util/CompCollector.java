@@ -4,6 +4,7 @@ import gis.obj.CompInfo;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,9 +49,11 @@ public class CompCollector {
 	final String url = "http://sgis.kostat.go.kr/msgis/getCompList.do";
 	String cookie;
 	List<String> codeList;
+	List<String> compResult;
 
 	public CompCollector() {
 		codeList = new ArrayList<String>();
+		compResult = new ArrayList<String>();
 	}
 
 	/**
@@ -87,10 +90,17 @@ public class CompCollector {
 						x, y);
 				list.add(info);
 			}
-		} catch (java.lang.ClassCastException cce) {
+		} catch (Exception e) {
 			System.err.println(jsonString);
 			// 연결 안되면 프록시 재설정~
-			// ProxyManager.setProxy();
+			if(!jsonString.contains("noData")){
+				ProxyManager.setProxy();
+				getCookie();
+			}else{
+				CompInfo info = new CompInfo(code, item, "empty", "1", "0",
+						"0", "0");
+				list.add(info);
+			}
 
 		}
 
@@ -108,7 +118,7 @@ public class CompCollector {
 	public String get(String code, String item) throws InterruptedException {
 		// 요청 날릴 때 인간처럼 보이게 한다.
 		// 1. 랜덤하게 쉬기.
-		long sleep = (long) (Math.random() * 3000) + 2000;
+		long sleep = (long) (Math.random() * 5000) + 2000;
 		// 새벽시간대에는 좀 더 빠르게!
 		int hour = Calendar.getInstance(Locale.KOREA).get(Calendar.HOUR_OF_DAY);
 		if (hour > 3 && hour < 9) {
@@ -120,7 +130,7 @@ public class CompCollector {
 		// 2. 랜덤하게 아이피 바꾸기.
 		if (Math.random() * 100 < 3) {
 			System.err.println("ProxyManager.setProxy");
-			ProxyManager.setProxy();
+			//ProxyManager.setProxy();
 			getCookie();
 		}
 
@@ -179,8 +189,8 @@ public class CompCollector {
 			System.out.println("getCookie");
 			URL url = new URL("http://sgis.kostat.go.kr/msgis/index.vw");
 			URLConnection conn = url.openConnection();
-			conn.setConnectTimeout(5 * 1000);
-			conn.setReadTimeout(10 * 1000);
+			conn.setConnectTimeout(1 * 1000);
+			conn.setReadTimeout(3 * 1000);
 			conn.setRequestProperty(
 					"User-Agent",
 					"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36");
@@ -215,6 +225,9 @@ public class CompCollector {
 	}
 
 	public void test() throws ParseException, IOException, InterruptedException {
+		
+		//작업한 결과값들 로딩
+		readCompResult();
 
 		// 시군구 배열에서...
 		// 파일 읽고
@@ -222,14 +235,47 @@ public class CompCollector {
 
 		// 쿠키 얻고.
 		getCookie();
+		
+		//나와야하는 모든 경우의 수
+		List<String> entireCase =new ArrayList<String>();
 
 		// 코드 하나씩?!
 		for (String code : codeList) {
 			for (int item = 19; item <= 55; item++) {
-				getCompInfo(code, String.valueOf(item));
+				entireCase.add(code + "\t" + String.valueOf(item));
+				//System.out.println(code + "\t" + String.valueOf(item));
+				
+				//이건 처음 작업할 때 사용.
+				//getCompInfo(code, String.valueOf(item));
 			}
 		}
+		
+		//작업안된거 찾기.
+		entireCase.removeAll(compResult);
+		
+		for(String c : entireCase){
+			System.out.println(c);
+			String code = c.split("\t")[0];
+			String item = c.split("\t")[1];
+			getCompInfo(code, item);
+		}
 
+	}
+
+	private void readCompResult() throws IOException {
+		File codeListFile = new File("comp_result.txt");
+		// 파일내용을 읽어서.
+		Reader r = new FileReader(codeListFile);
+		BufferedReader br = new BufferedReader(r);
+
+		// 한줄마다 데이터를 끊어서
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			compResult.add(line);
+		}
+
+		br.close();
+		
 	}
 
 	private void getCompInfo(String code, String item) throws ParseException,

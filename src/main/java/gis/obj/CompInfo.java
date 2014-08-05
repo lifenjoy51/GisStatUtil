@@ -8,6 +8,11 @@ public class CompInfo {
 	private String ufid;
 	private String x;
 	private String y;
+	private String near_code;
+	
+	public CompInfo(){
+		
+	}
 
 	public CompInfo(String code, String item, String comp_nm, String number,
 			String ufid, String x, String y) {
@@ -77,11 +82,21 @@ public class CompInfo {
 		this.y = y;
 	}
 
+	public String getNear_code() {
+		return near_code;
+	}
+
+	public void setNear_code(String near_code) {
+		this.near_code = near_code;
+	}
+
 	@Override
 	public String toString() {
 		return "CompInfo [code=" + code + ", item=" + item + ", comp_nm="
 				+ comp_nm + ", number=" + number + ", ufid=" + ufid + ", x="
-				+ x + ", y=" + y + "]";
+				+ x + ", y=" + y + ", near_code=" + near_code + "]";
 	}
+	
+	
 
 }
