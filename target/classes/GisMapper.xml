@@ -151,4 +151,16 @@
 		)
 	</insert>
 	
+	<insert id="insertCodeInfo" parameterType="codeInfo">
+	    INSERT INTO code_info
+	    (
+	    	code
+	    	,coord_array
+	    )VALUES(
+	    	#{code}
+			,#{coord_array}
+	    )
+	    
+	</insert>
+	
 </mapper>

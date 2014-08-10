@@ -1,5 +1,6 @@
 package gis;
 
+import gis.dump.CodeInfoImporter;
 import gis.dump.DataImporter;
 import gis.trans.DistCalculator;
 import gis.trans.PositionCalculator;
@@ -40,6 +41,9 @@ public class Main {
 	
 	@Autowired
 	DistCalculator distCalculator;
+	
+	@Autowired
+	CodeInfoImporter codeInfoImporter;
 
 	/**
 	 * 처음 구동되는 부분.
@@ -91,6 +95,9 @@ public class Main {
 		//positionCalculator.run();
 		
 		//최단거리 계산
-		distCalculator.run();
+		//distCalculator.run();
+		
+		//코드정보 입력.
+		codeInfoImporter.run();
 	}
 }
