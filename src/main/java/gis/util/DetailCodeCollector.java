@@ -109,6 +109,7 @@ public class DetailCodeCollector {
      * @return
      */
     private void parseCode(String json) {
+    	System.out.println(json);
         // 서버로부터 받은 문자열을 json객체로.
         JSONParser jsonParser = new JSONParser();
         JSONObject obj;

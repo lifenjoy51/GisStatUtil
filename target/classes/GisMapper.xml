@@ -8,160 +8,211 @@
 		insert into
 		detail_code_info
 		(
-			code
-			,addr
-			,coord_array_string
-			,center_x
-			,center_y
-		) values (
-			#{code}
-			,#{addr}
-			,#{coord_array_string}
-			,#{center_x}
-			,#{center_y}
+		code
+		,addr
+		,coord_array_string
+		,center_x
+		,center_y
+		)
+		values (
+		#{code}
+		,#{addr}
+		,#{coord_array_string}
+		,#{center_x}
+		,#{center_y}
 		)
 	</insert>
-	
+
 	<select id="getDetailCodeInfo" resultType="detailCodeInfo">
 		select *
-		from detail_code_info
+		from
+		detail_code_info
 		limit 1
 	</select>
-	
-	<select id="getDetailCodeList" parameterType="String" resultType="detailCodeInfo">
+
+	<select id="getDetailCodeList" parameterType="String"
+		resultType="detailCodeInfo">
 		select *
 		from detail_code_info
 		where code = #{code}
 	</select>
-	
+
 	<select id="getRemainCode" resultType="String">
 		select code
-		from detail_code_info
+		from
+		detail_code_info
 		where status='N'
 		limit 1
 	</select>
-	
+
 	<insert id="insertStatInfo" parameterType="statInfo">
 		insert into stat_info
 		(
-			code,
-			item,
-			cnt
-		) values (			
-			#{code}
-			,#{item}
-			,#{cnt}
+		code,
+		item,
+		cnt
+		) values (
+		#{code}
+		,#{item}
+		,#{cnt}
 		)
 	</insert>
-	
+
 	<update id="updateStatus" parameterType="detailCodeInfo">
 		update detail_code_info
 		set status = #{status}
-			,worker = #{worker}
+		,worker = #{worker}
 		where code = #{code}
 	</update>
-	
-	<!-- 데이터 임포트  -->
+
+	<!-- 데이터 임포트 -->
 	<insert id="insertRawData" parameterType="rawData">
-	INSERT INTO raw_data
-	(
+		INSERT INTO raw_data
+		(
 		year,
 		code,
 		tp_cd,
 		cnt
-	)	VALUES	(
+		) VALUES (
 		#{year},
 		#{code},
 		#{tp_cd},
 		#{cnt}
-	)		
+		)
 	</insert>
-	
+
 	<insert id="insertCompInfo" parameterType="compInfo">
-	INSERT INTO comp_info
-	(
-	code,
-	item,
-	comp_nm,
-	number,
-	ufid,
-	x,
-	y
-	)	VALUES	(
-	#{code},
-	#{item},
-	#{comp_nm},
-	#{number},
-	#{ufid},
-	#{x},
-	#{y}
-	)	
+		INSERT INTO comp_info
+		(
+		code,
+		item,
+		comp_nm,
+		number,
+		ufid,
+		x,
+		y
+		) VALUES (
+		#{code},
+		#{item},
+		#{comp_nm},
+		#{number},
+		#{ufid},
+		#{x},
+		#{y}
+		)
 	</insert>
-	
+
 	<select id="getDetailCodeListAll" resultType="detailCodeInfo">
-		select 
-			code
-			,addr
-			,center_x
-			,center_y
+		select
+		code
+		,addr
+		,center_x
+		,center_y
 		from detail_code_info
 	</select>
-	
+
 	<select id="getCompInfoList" resultType="compInfo">
-		select 
-			code,
-			item,
-			comp_nm,
-			number,
-			ufid,
-			x,
-			y
+		select
+		code,
+		item,
+		comp_nm,
+		number,
+		ufid,
+		x,
+		y
 		from comp_info
 	</select>
-	
+
 	<update id="updateCompInfoCode" parameterType="compInfo">
 		update comp_info
 		set near_code = #{near_code}
 		where ufid = #{ufid}
 	</update>
-	
-	<select id="getDetailCodeListBy5Code" resultType="detailCodeInfo" parameterType="String">
-	
-		select 
-			code
-			,addr
-			,center_x
-			,center_y
+
+	<select id="getDetailCodeListBy5Code" resultType="detailCodeInfo"
+		parameterType="String">
+
+		select
+		code
+		,addr
+		,center_x
+		,center_y
 		from detail_code_info
 		where left(code,5) = #{code}
-		and center_x is not null
-		and center_y is not null
+		and center_x is not
+		null
+		and center_y is not
+		null
 	</select>
-	
+
 	<insert id="updateCodeItemDist" parameterType="codeItemDist">
-		INSERT INTO code_item_dist
+		INSERT INTO
+		code_item_dist
 		(
-			code
-			,item
-			,dist
+		code
+		,item
+		,dist
 		) VALUES (
-			#{code}
-			,#{item}
-			,#{dist}
+		#{code}
+		,#{item}
+		,#{dist}
 		)
 	</insert>
-	
+
 	<insert id="updateCodeItemCnt" parameterType="codeItemCnt">
-		INSERT INTO code_item_cnt
+		INSERT INTO
+		code_item_cnt
 		(
-			code
-			,item
-			,cnt
+		code
+		,item
+		,cnt
 		) VALUES (
-			#{code}
-			,#{item}
-			,#{cnt}
+		#{code}
+		,#{item}
+		,#{cnt}
 		)
 	</insert>
+
+	<insert id="insertCodeInfo" parameterType="codeInfo">
+		INSERT INTO code_info
+		(
+		code
+		,coord_array
+		)VALUES(
+		#{code}
+		,#{coord_array}
+		)
+
+	</insert>
+
+
+	<select id="getCodeInfoListAll" resultType="codeInfo">
+		select
+		code
+		,coord_array
+		from code_info
+
+	</select>
+
+	<update id="updateCodeInfo" parameterType="codeInfo">
+		update code_info
+		set
+		coord_array = #{coord_array}
+		where code = #{code}
+	</update>
 	
+	
+
+	<insert id="insertCodeInfoMod" parameterType="codeInfo">
+		INSERT INTO code_info_mod
+		(
+		code
+		,coord_array
+		)VALUES(
+		#{code}
+		,#{coord_array}
+		)
+
+	</insert>
+
 </mapper>

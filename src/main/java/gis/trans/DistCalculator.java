@@ -144,8 +144,8 @@ public class DistCalculator {
 					Integer y = (int) Float.parseFloat(dc.getY());
 
 					// 거리계산!
-					Integer dx = Math.abs(Integer.sum(cx, x));
-					Integer dy = Math.abs(Integer.sum(cy, y));
+					Integer dx = Math.abs(cx+ x);
+					Integer dy = Math.abs(cy+ y);
 					Integer d = (int) (Math.pow(dx, 2) + Math.pow(dy, 2));
 
 					// 맵에 넣기.
@@ -153,7 +153,8 @@ public class DistCalculator {
 						// 기존것과 비교해서 새로운 거리가 더 작으면.
 						if (distMap.get(item) > d) {
 							// 바꿔치기
-							distMap.replace(item, d);
+							distMap.remove(item);
+							distMap.put(item, d);
 						}
 					} else {
 						distMap.put(item, d);

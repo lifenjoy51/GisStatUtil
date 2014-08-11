@@ -1,5 +1,6 @@
 package gis.dao;
 
+import gis.obj.CodeInfo;
 import gis.obj.CompInfo;
 import gis.obj.DetailCodeInfo;
 import gis.obj.RawData;
@@ -33,5 +34,7 @@ public interface GisDao {
 	public void updateCompInfoCode(CompInfo c);
 
 	public List<DetailCodeInfo> getDetailCodeListBy5Code(String code);
+
+	public List<CodeInfo> getCodeInfoListAll();
 
 }

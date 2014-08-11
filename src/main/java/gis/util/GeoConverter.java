@@ -17,7 +17,15 @@ public class GeoConverter {
 		return (int) (Math.ceil((180 + _long) / 6.0));
 	}
 
-	public static PointF wgs2tm(double longitude, double latitude)
+	/**
+	 * 
+	 * @param latitude
+	 * @param longitude
+	 * @return
+	 * @throws MismatchedDimensionException
+	 * @throws TransformException
+	 */
+	public static PointF wgs2tm(double latitude, double longitude)
 			throws MismatchedDimensionException, TransformException {
 		DirectPosition dp = new DirectPosition2D(longitude, latitude);
 		final int zone = utm_zone(longitude);
@@ -33,15 +41,23 @@ public class GeoConverter {
 		}
 		DirectPosition p2 = crs_transform.transform(dp, null);
 		double[] c = p2.getCoordinate();
-		System.out.println(String.format("%d, %f, %f", zone, c[0], c[1]));
+		//System.out.println(String.format("%d, %f, %f", zone, c[1], c[0]));
 
-		return new PointF(c[0], c[1]);
+		return new PointF(c[1], c[0]);
 
 	}
 
-	public static PointF tm2wgs(double x, double y)
+	/**
+	 * 
+	 * @param latitude
+	 * @param longitude
+	 * @return
+	 * @throws MismatchedDimensionException
+	 * @throws TransformException
+	 */
+	public static PointF tm2wgs(double latitude, double longitude)
 			throws MismatchedDimensionException, TransformException {
-		DirectPosition dp = new DirectPosition2D(x, y);
+		DirectPosition dp = new DirectPosition2D(longitude, latitude);
 		MathTransform crs_transform;
 		try {
 			CoordinateReferenceSystem utm = CRS.decode("EPSG:5181");
@@ -54,14 +70,15 @@ public class GeoConverter {
 		}
 		DirectPosition p2 = crs_transform.transform(dp, null);
 		double[] c = p2.getCoordinate();
-		System.out.println(String.format("%f, %f", c[0], c[1]));
+		//System.out.println(String.format("%f, %f", c[1], c[0]));
 
-		return new PointF(c[0], c[1]);
+		return new PointF(c[1], c[0]);
 
 	}
 
-	public static void main(String[] args) throws MismatchedDimensionException, TransformException {
-		GeoConverter.wgs2tm(127, 38);
-		GeoConverter.tm2wgs(500000, 200000);
+	public static void main(String[] args) throws MismatchedDimensionException,
+			TransformException {
+		GeoConverter.wgs2tm(38, 127);
+		GeoConverter.tm2wgs(200000, 500000);
 	}
 }
