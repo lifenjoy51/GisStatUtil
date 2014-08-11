@@ -1,6 +1,7 @@
 package gis;
 
 import gis.dump.DataImporter;
+import gis.trans.CntCalculator;
 import gis.trans.DistCalculator;
 import gis.trans.PositionCalculator;
 import gis.util.CompCollector;
@@ -40,6 +41,9 @@ public class Main {
 	
 	@Autowired
 	DistCalculator distCalculator;
+	
+	@Autowired
+	CntCalculator cntCalculator;
 
 	/**
 	 * 처음 구동되는 부분.
@@ -91,6 +95,9 @@ public class Main {
 		//positionCalculator.run();
 		
 		//최단거리 계산
-		distCalculator.run();
+		//distCalculator.run();
+		
+		//일정거리 안에 있는 개수 계산
+		cntCalculator.run();
 	}
 }

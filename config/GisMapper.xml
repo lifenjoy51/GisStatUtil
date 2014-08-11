@@ -151,4 +151,17 @@
 		)
 	</insert>
 	
+	<insert id="updateCodeItemCnt" parameterType="codeItemCnt">
+		INSERT INTO code_item_cnt
+		(
+			code
+			,item
+			,cnt
+		) VALUES (
+			#{code}
+			,#{item}
+			,#{cnt}
+		)
+	</insert>
+	
 </mapper>
