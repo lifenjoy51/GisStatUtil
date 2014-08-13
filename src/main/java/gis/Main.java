@@ -113,5 +113,7 @@ public class Main {
 		
 		//좌표 변환
 		coordArrayConverter.run();
+		
+		//test
 	}
 }
