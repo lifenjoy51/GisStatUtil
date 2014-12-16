@@ -54,7 +54,7 @@ public class CoordArrayConverter {
 
 	public void run() throws IOException, InterruptedException {
 		// 코드를 읽어오고
-		codeInfoList = dao.getCodeInfoListAll();
+		codeInfoList = dao.getCodeInfoListUmd();
 		// 이 코드들이...
 
 		// 회사들은 현재
@@ -81,7 +81,7 @@ public class CoordArrayConverter {
 			CodeInfo c = compQueue.poll();
 			try {
 				System.out.println(commit);
-				session.insert("gis.dao.GisDao.insertCodeInfoMod", c);
+				session.insert("gis.dao.GisDao.insertCodeInfoUmd", c);
 				if (++commit % BATCH_SIZE == 0) {
 					session.commit();
 				}
@@ -164,7 +164,7 @@ public class CoordArrayConverter {
 
 				// 작업할 큐에 넣는다.
 				compQueue.add(ci);
-				System.out.println(ci);
+				//System.out.println(ci);
 
 			} catch (NullPointerException npe) {
 				System.err.println("null");
@@ -190,6 +190,14 @@ public class CoordArrayConverter {
 			JSONArray arrayOne = (JSONArray) orgJsonArray.get(0);
 			//System.out.println("arrayOne = "+arrayOne.toJSONString());
 			JSONArray newArray = new JSONArray();
+			double px = 0;
+			double py = 0;
+			
+			double spx=0;
+			double spy=0;
+			double scnt =0;
+			double sSize = 3;
+			
 			for (int i = 0; i < arrayOne.size(); i++) {
 				JSONArray coordArray = (JSONArray) arrayOne.get(i);
 				double latitude = Double.valueOf((Long) coordArray.get(0));
@@ -198,11 +206,29 @@ public class CoordArrayConverter {
 					// 좌표 변환하고.
 					PointF p = GeoConverter.tm2wgs(latitude, longitude);
 					//위도 경도를 어레이로 만들어서 
-					JSONArray coord = new JSONArray();
-					coord.add(p.x);
-					coord.add(p.y);
-					//다시 어레이에 담는다.
-					newArray.add(coord);
+					double shift = 10000.0;
+					double tpx = Math.round((p.x + 0.0008)*shift)/shift;
+					double tpy = Math.round((p.y + 0.0023)*shift)/shift;
+					if(px != tpx && py != tpy){
+						px = tpx;
+						py = tpy;
+						
+						//평균계산.
+						spx += px;
+						spy += py;
+						if(++scnt % sSize == 0){
+							double tspx = Math.round((spx/sSize)*shift)/shift;
+							double tspy = Math.round((spy/sSize)*shift)/shift;
+							JSONArray coord = new JSONArray();
+							coord.add(tspy);
+							coord.add(tspx);
+							//다시 어레이에 담는다.
+							newArray.add(coord);	
+							
+							spx=0;
+							spy=0;
+						}
+					}
 				} catch (MismatchedDimensionException e) {
 					e.printStackTrace();
 				} catch (TransformException e) {

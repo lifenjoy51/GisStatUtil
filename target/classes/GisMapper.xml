@@ -212,7 +212,25 @@
 		#{code}
 		,#{coord_array}
 		)
-
+	</insert>
+	
+	<select id="getCodeInfoListUmd" resultType="codeInfo">
+		select
+		code
+		,coord_array
+		from code_info
+		where length(code) &lt; 8
+	</select>
+	
+	<insert id="insertCodeInfoUmd" parameterType="codeInfo">
+		INSERT INTO code_info_umd
+		(
+		code
+		,coord_array
+		)VALUES(
+		#{code}
+		,#{coord_array}
+		)
 	</insert>
 
 </mapper>

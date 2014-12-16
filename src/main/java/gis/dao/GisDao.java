@@ -37,4 +37,6 @@ public interface GisDao {
 
 	public List<CodeInfo> getCodeInfoListAll();
 
+	public List<CodeInfo> getCodeInfoListUmd();
+
 }

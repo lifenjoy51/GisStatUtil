@@ -3,9 +3,9 @@ package gis.obj;
 public class CodeInfo {
 	private String code;
 	private String coord_array;
-	
-	public CodeInfo(){
-		
+
+	public CodeInfo() {
+
 	}
 
 	public CodeInfo(String code, String coord_array) {
@@ -29,4 +29,10 @@ public class CodeInfo {
 	public void setCoord_array(String coord_array) {
 		this.coord_array = coord_array;
 	}
+
+	@Override
+	public String toString() {
+		return "CodeInfo [code=" + code + ", coord_array=" + coord_array + "]";
+	}
+
 }

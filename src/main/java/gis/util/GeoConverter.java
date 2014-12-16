@@ -32,7 +32,7 @@ public class GeoConverter {
 		MathTransform crs_transform;
 		try {
 			CoordinateReferenceSystem wgs84 = DefaultGeographicCRS.WGS84; // EPSG:4326
-			CoordinateReferenceSystem utm = CRS.decode("EPSG:5181");
+			CoordinateReferenceSystem utm = CRS.decode("EPSG:2097");
 			crs_transform = CRS.findMathTransform(wgs84, utm);
 		} catch (NoSuchAuthorityCodeException e) {
 			throw new RuntimeException(e);
@@ -60,9 +60,9 @@ public class GeoConverter {
 		DirectPosition dp = new DirectPosition2D(longitude, latitude);
 		MathTransform crs_transform;
 		try {
-			CoordinateReferenceSystem utm = CRS.decode("EPSG:5181");
-			CoordinateReferenceSystem wgs84 = DefaultGeographicCRS.WGS84; // EPSG:4326
-			crs_transform = CRS.findMathTransform(utm, wgs84);
+			CoordinateReferenceSystem utm = CRS.decode("EPSG:2097");
+			CoordinateReferenceSystem wgs84 = CRS.decode("EPSG:4326"); //DefaultGeographicCRS.WGS84; // EPSG:4326
+			crs_transform = CRS.findMathTransform(utm, wgs84, true);
 		} catch (NoSuchAuthorityCodeException e) {
 			throw new RuntimeException(e);
 		} catch (FactoryException e) {
@@ -78,7 +78,34 @@ public class GeoConverter {
 
 	public static void main(String[] args) throws MismatchedDimensionException,
 			TransformException {
-		GeoConverter.wgs2tm(38, 127);
-		GeoConverter.tm2wgs(200000, 500000);
+		//PointF p1 = GeoConverter.wgs2tm(37.608298202892925, 126.95091548864121);
+		//System.out.println(p1);
+		PointF p2 = GeoConverter.tm2wgs(195598, 456221);
+		System.out.println(p2);
+		//PointF [x=126.9501417466901, y=	37.606094787622794]
+		//			126.9509154886412		37.608298202892925
+		//			  0.0007737419511		 0.002203415270131
+		
+		PointF p3 = GeoConverter.tm2wgs(155598, 356221);
+		System.out.println(p3);
+		//PointF [x=126.50303274010484, y=	36.70390799169085]
+		//			126.50387183776607		36.70621304872709
+		//			  0.00083909766123		 0.00230505703624
+		
+		PointF p4 = GeoConverter.tm2wgs(214005, 256243);
+		System.out.println(p4);
+		//PointF [x=127.15496295769653, y=	35.80374669616551]
+		//			127.15576732000366		35.80617170307602
+		//			  0.00080436230713		 0.00242500691051
+		
+		//EPSG:9999	PointF [x=126.950 91548864121, y=37.608 298202892925]
+		//EPSG:2097	PointF [x=126.950 1417466901,  y=37.606 094787622794]
+		
+		//EPSG:9999	PointF [x=126.950 91548864121, y=37.608 298202892925]
+		//EPSG:5181	PointF [x=126.950 14768805734, y=37.605 55829916078]
+		
+		//EPSG:5186	PointF [x=126.95073579695696, y=36.70449993724312]
+		//EPSG:5174	PointF [x=126.95303202446784, y=37.606094787622794]
+		
 	}
 }
